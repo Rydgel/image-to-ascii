@@ -1,0 +1,8 @@
+[package]
+name = "image-to-ascii"
+version = "0.1.0"
+authors = ["Jérôme Mahuet <jerome.mahuet@gmail.com>"]
+
+[dependencies]
+image = "0.10.3"
+clap = {version = "2", features = ["unstable"]}
