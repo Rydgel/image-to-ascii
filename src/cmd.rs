@@ -6,7 +6,7 @@ pub struct Command {
     source: String,
     output: String,
     scale: f32,
-    cols: i32,
+    cols: u32,
 }
 
 impl Command {
@@ -26,7 +26,7 @@ impl Command {
         &self.scale
     }
 
-    pub fn cols(&self) -> &i32 {
+    pub fn cols(&self) -> &u32 {
         &self.cols
     }
 }
@@ -48,7 +48,7 @@ pub fn read_command() -> Command {
         source: matches.value_of("src").unwrap().to_string(),
         output: matches.value_of("output").unwrap().to_string(),
         scale: value_t!(matches.value_of("scale"), f32).unwrap_or(0.43),
-        cols: value_t!(matches.value_of("cols"), i32).unwrap_or(80),
+        cols: value_t!(matches.value_of("cols"), u32).unwrap_or(80),
     }
 }
 
