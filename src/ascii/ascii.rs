@@ -80,9 +80,11 @@ impl Ascii for Command {
 
                 aimg.push(*gsval);
             }
+            aimg.push('\n');
         }
 
         let s: String = aimg.into_iter().collect();
+
         Ok(s.to_string())
     }
 }
@@ -93,10 +95,16 @@ fn crop_image(img: &image::DynamicImage, x: u32, y: u32, width: u32, height: u32
 }
 
 fn get_average(img: &image::DynamicImage) -> i32 {
-    let pixels = img.raw_pixels();
-    let sum = pixels.iter()
-        .map(|a| *a as f32)
+    let pixels = img.pixels();
+    let sum = pixels
+        .map(|(_, _, p)| p.data[0] as f64)
         .fold(0.0, |a, b| a + b);
-    let length = pixels.as_slice().len() as f32;
+    let length = count_pixels(&img);
     return (sum / length).round() as i32;
+}
+
+fn count_pixels(img: &image::DynamicImage) -> f64 {
+    let pixels = img.pixels();
+    let length = pixels.count() as f64;
+    length
 }
