@@ -6,11 +6,10 @@ use image::GenericImage;
 use ascii::AsciiError;
 
 // 70 levels of gray
-const GSCALE1: &'static str =
-    "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^;`'. ";
+const GSCALE1: &'static str = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,\"^;\
+                               `'. ";
 // 10 levels of gray
-const GSCALE2: &'static str =
-    "@%#*+=-:. ";
+const GSCALE2: &'static str = "@%#*+=-:. ";
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum AsciiType {
@@ -61,7 +60,7 @@ impl Ascii for Command {
             for i in 0..(*self.cols() - 1) {
                 // crop the image to fit the tile
                 let x1 = (i * w) as u32;
-                let mut x2 = ((i+1) * w) as u32;
+                let mut x2 = ((i + 1) * w) as u32;
                 // correct the last tile
                 if i == *self.cols() - 1 {
                     x2 = width;
@@ -73,9 +72,9 @@ impl Ascii for Command {
                 // look up the ASCII character for grayscale value (avg)
                 let gsval;
                 if *self.ascii_type() == AsciiType::Complex {
-                    gsval = gscale1.get(((average * 69)/255) as usize).unwrap();
+                    gsval = gscale1.get(((average * 69) / 255) as usize).unwrap();
                 } else {
-                    gsval = gscale2.get(((average * 9)/255) as usize).unwrap();
+                    gsval = gscale2.get(((average * 9) / 255) as usize).unwrap();
                 }
 
                 aimg.push(*gsval);
@@ -89,15 +88,19 @@ impl Ascii for Command {
     }
 }
 
-fn crop_image(img: &image::DynamicImage, x: u32, y: u32, width: u32, height: u32) -> image::DynamicImage {
+fn crop_image(img: &image::DynamicImage,
+              x: u32,
+              y: u32,
+              width: u32,
+              height: u32)
+              -> image::DynamicImage {
     let mut img = img.clone();
     return img.crop(x, y, width, height);
 }
 
 fn get_average(img: &image::DynamicImage) -> i32 {
     let pixels = img.pixels();
-    let sum = pixels
-        .map(|(_, _, p)| p.data[0] as f64)
+    let sum = pixels.map(|(_, _, p)| p.data[0] as f64)
         .fold(0.0, |a, b| a + b);
     let length = count_pixels(&img);
     return (sum / length).round() as i32;
