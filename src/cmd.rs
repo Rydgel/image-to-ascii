@@ -41,7 +41,8 @@ pub fn read_command() -> Command {
         (@arg output: -o --output +required +takes_value "Path of the output file")
         (@arg scale: --scale +takes_value "Font scaling")
         (@arg cols: --cols +takes_value "Number of columns")
-    ).get_matches();
+    )
+        .get_matches();
 
     Command {
         ascii_type: read_type(matches.value_of("type").unwrap_or("simple")),
