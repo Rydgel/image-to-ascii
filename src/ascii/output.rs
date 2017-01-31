@@ -13,7 +13,7 @@ impl Output for AsciiString {
     fn save_on_disk(&self, output: &str) -> ::std::result::Result<String, AsciiError> {
         let mut f = try!(File::create(output));
         try!(f.write_all(self.as_bytes()));
-        return Ok("Output saved.".to_string());
+        Ok("Output saved.".to_string())
     }
 
     fn show_stdout(&self) {

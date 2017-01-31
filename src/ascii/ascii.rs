@@ -51,33 +51,32 @@ impl Ascii for Command {
 
         for j in 0..(rows - 1) {
             let y1 = j * h as u32;
-            let mut y2 = ((j + 1) * h as u32) as u32;
-            // correct the last tile
-            if j == rows - 1 {
-                y2 = height;
-            }
+            let y2 = if j == rows - 1 {
+                height
+            } else {
+                ((j + 1) * h as u32) as u32
+            };
 
             for i in 0..(*self.cols() - 1) {
                 // crop the image to fit the tile
                 let x1 = (i * w) as u32;
-                let mut x2 = ((i + 1) * w) as u32;
-                // correct the last tile
-                if i == *self.cols() - 1 {
-                    x2 = width;
-                }
+                let x2 = if i == *self.cols() - 1 {
+                    width
+                } else {
+                    ((i + 1) * w) as u32
+                };
                 // crop the image to extract the tile into another Image object
                 let crop_img = crop_image(&grey_img, x1, y1, x2, y2);
                 // get the average luminance
                 let average = get_average(&crop_img);
                 // look up the ASCII character for grayscale value (avg)
-                let gsval;
-                if *self.ascii_type() == AsciiType::Complex {
-                    gsval = gscale1.get(((average * 69) / 255) as usize).unwrap();
+                let gsval = if *self.ascii_type() == AsciiType::Complex {
+                    gscale1[((average * 69) / 255) as usize]
                 } else {
-                    gsval = gscale2.get(((average * 9) / 255) as usize).unwrap();
-                }
+                    gscale2[((average * 9) / 255) as usize]
+                };
 
-                aimg.push(*gsval);
+                aimg.push(gsval);
             }
             aimg.push('\n');
         }
@@ -95,19 +94,18 @@ fn crop_image(img: &image::DynamicImage,
               height: u32)
               -> image::DynamicImage {
     let mut img = img.clone();
-    return img.crop(x, y, width, height);
+    img.crop(x, y, width, height)
 }
 
 fn get_average(img: &image::DynamicImage) -> i32 {
     let pixels = img.pixels();
     let sum = pixels.map(|(_, _, p)| p.data[0] as f64)
         .fold(0.0, |a, b| a + b);
-    let length = count_pixels(&img);
-    return (sum / length).round() as i32;
+    let length = count_pixels(img);
+    (sum / length).round() as i32
 }
 
 fn count_pixels(img: &image::DynamicImage) -> f64 {
     let pixels = img.pixels();
-    let length = pixels.count() as f64;
-    length
+    pixels.count() as f64
 }

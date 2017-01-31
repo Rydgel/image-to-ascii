@@ -55,7 +55,6 @@ pub fn read_command() -> Command {
 
 fn read_type(t: &str) -> AsciiType {
     match t {
-        "simple" => AsciiType::Simple,
         "complex" => AsciiType::Complex,
         _ => AsciiType::Simple,
     }
